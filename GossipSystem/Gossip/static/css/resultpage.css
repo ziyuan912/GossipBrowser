@@ -1,0 +1,62 @@
+.titlePos{
+	position:absolute;
+  	top:4%; 
+  	left:34%;
+}
+
+.inputPos{
+    position:absolute;
+  	top:14%; 
+ 	left:10%;
+ 	right:10%;
+}
+
+.panel-heading{
+	text-align: left;
+	height: 10%;
+	color:black;
+	border-color: black;
+	border-style: solid;
+	border-width: 0.1px;
+	background-color:orange; 
+}
+.panel-title{
+padding-left:1rem;
+color: black;
+}
+.panel-body{
+	border-color: black;
+	border-style: solid;
+	border-width: 1px;
+	background-color:white; 
+}
+
+
+.pos{
+	width:60%;
+	margin-top: 12%;
+}
+
+.tdicon{
+	width:10%;
+	text-align: center;
+}
+.tdtitle{
+	width:20%;
+	text-align: left;
+}
+.tdcontent{
+	width:70%;
+	text-align: left;
+}
+.report-title{
+	position:absolute;
+	color:orange;
+	text-align: middle;
+	font-size:1rem;
+
+}
+.URL-title{
+	color: orange;
+
+}
