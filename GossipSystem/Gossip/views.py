@@ -10,7 +10,7 @@ def login(request):
     User = user.objects.filter(account = username).filter(password = password).first()
     if User is not None:
         #auth.login(request, user)
-        return HttpResponseRedirect('/index/', context_instance = RequestContext(request))
+        return HttpResponseRedirect('/index/')
     else:
         return render(request, 'login.html', locals())
 

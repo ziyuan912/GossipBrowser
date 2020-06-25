@@ -35,12 +35,12 @@
             <div class="inner">
               <h1 class="major">Login</h1>
                 <div class="inputPos">
-                  <form method="POST">
+                  <form method="post">{% csrf_token %}
                     <h3>Account</h3>
                     <div style="color: white; width: 300px; height: 50px; border-color: white"><input type="text" placeholder="Please enter your account" name="Account" aria-describedby="basic-addon1"></div>
                     <div style="height: 20px"></div>
                     <h3>Password</h3>
-                    <div style="color: white; width: 300px; height: 50px"><input class="col-3" type="password" placeholder="Please enter your password" name="Password" aria-describedby="basic-addon1"></div>
+                    <div style="color: white; width: 300px; height: 50px"><input class="col-3" type="password" placeholder="Please enter your password" name="Password"></div>
                     
                     <br>
                     <button type="submit" class="btn btn-warning">Login</button>
