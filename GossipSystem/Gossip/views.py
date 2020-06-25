@@ -5,8 +5,8 @@ from django.contrib import auth
 def login(request):
     if request.user.is_authenticated:
         return HttpResponseRedirect('/index/')
-    username = request.POST.get('username', '')
-    password = request.POST.get('password', '')
+    username = request.POST.get('Account', '')
+    password = request.POST.get('Password', '')
     user = auth.authenticate(username=username, password=password)
     if user is not None and user.is_active:
         auth.login(request, user)
