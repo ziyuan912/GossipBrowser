@@ -1,16 +1,16 @@
 from django.shortcuts import render
-
-from django.contrib import auth
+from django.http import HttpResponseRedirect
+from .models import user
 
 def login(request):
-    if request.user.is_authenticated:
-        return HttpResponseRedirect('/index/')
+    """if request.user.is_authenticated:
+        return HttpResponseRedirect('/index/')"""
     username = request.POST.get('Account', '')
     password = request.POST.get('Password', '')
-    user = auth.authenticate(username=username, password=password)
-    if user is not None and user.is_active:
-        auth.login(request, user)
-        return HttpResponseRedirect('/index/')
+    User = user.objects.filter(account = username).filter(password = password).first()
+    if User is not None:
+        #auth.login(request, user)
+        return HttpResponseRedirect('/index/', context_instance = RequestContext(request))
     else:
         return render(request, 'login.html', locals())
 
