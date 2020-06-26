@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
-from .models import user
+from .models import user, document
 import json
 
 def login(request):
@@ -33,8 +33,15 @@ def welcome(request):
         })
     else:
         documents = [0, 1, 2, 3, 4]
+        doc_list = []
+        for doc in documents:
+            f = open("Gossip/templates/article_htmls/" + str(doc) + ".html")
+            context = f.read()
+            topic = context.split('<h1 class="major">')[1].split('</h1>')[0]
+            doc_list.append(document(ID=doc, topic=topic))
+            f.close()
         return render(request, 'welcome.html', {
-            'username': username, 'documents': documents
+            'username': username, 'documents': doc_list
         })
 
 def document_details(request, docid):

@@ -43,7 +43,7 @@
 		                    <nav>
 			                    <ul>
 			                    	{% for document in documents %}
-			                    		<li><a class="search_bar" href="../article_htmls/{{ document }}">{{ document }}</a></li>
+			                    		<li><a class="search_bar" href="../article_htmls/{{ document.ID }}"><h3>{{ document.topic }}</h3></a></li>
 			                    	{% endfor %}
 								</ul>
 							<nav>
