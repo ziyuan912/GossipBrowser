@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from Gossip.views import index, login, logout, welcome
+from Gossip.views import index, login, logout, welcome, document_details
 from django.contrib.auth import views
 
 urlpatterns = [
@@ -24,4 +24,5 @@ urlpatterns = [
     path('login/', login),
     path('logout/', logout),
     path('welcome/', welcome),
+    path('article_htmls/<int:docid>', document_details)
 ]

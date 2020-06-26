@@ -4,3 +4,4 @@ from django.db import models
 class user(models.Model):
 	account = models.CharField(max_length=50, help_text='account')
 	password = models.CharField(max_length=50, help_text='password')
+

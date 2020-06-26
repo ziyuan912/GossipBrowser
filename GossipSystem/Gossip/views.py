@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from .models import user
+import json
 
 def login(request):
     """if request.user.is_authenticated:
@@ -10,7 +11,7 @@ def login(request):
     User = user.objects.filter(account = username).filter(password = password).first()
     if User is not None:
         #auth.login(request, user)
-        return render(request, 'welcome.html', {'username': User.account, })
+        return render(request, 'welcome.html', {'username': User.account, 'documents': []})
     elif username == '' and password == '':
         return render(request, 'login.html', {'account_exist':1})
     else:
@@ -26,6 +27,15 @@ def logout(request):
 def welcome(request):
     username = request.POST.get('username')
     query = request.POST.get('Query', '')
-    return render(request, 'welcome.html', {
-        'username': username, 
-    })
+    if query == '':
+        return render(request, 'welcome.html', {
+            'username': username, 'documents': json.dumps([])
+        })
+    else:
+        documents = [0, 1, 2, 3, 4]
+        return render(request, 'welcome.html', {
+            'username': username, 'documents': documents
+        })
+
+def document_details(request, docid):
+    return render(request, 'article_htmls/' + str(docid) + '.html')
