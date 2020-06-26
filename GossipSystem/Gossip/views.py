@@ -10,11 +10,11 @@ def login(request):
     User = user.objects.filter(account = username).filter(password = password).first()
     if User is not None:
         #auth.login(request, user)
-        return HttpResponseRedirect('/index/')
+        return welcome(request, username)
     elif username == '' and password == '':
-        return welcome(request, username, 1)
+        return render(request, 'login.html', {'account_exist':1})
     else:
-        return welcome(request, username, 0)
+        return render(request, 'login.html', {'account_exist':0})
 
 def index(request):
     return render(request, 'index.html')
@@ -23,7 +23,7 @@ def logout(request):
     auth.logout(request)
     return HttpResponseRedirect('/index/')
 
-def welcome(request, username, account_exist):
+def welcome(request, username):
     return render(request, 'welcome.html', {
-        'username': username, 'account_exist': account_exist
+        'username': username,
     })
