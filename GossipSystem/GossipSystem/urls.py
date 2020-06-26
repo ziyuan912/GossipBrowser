@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from Gossip.views import index, login, logout
+from Gossip.views import index, login, logout, welcome
 from django.contrib.auth import views
 
 urlpatterns = [
@@ -23,4 +23,5 @@ urlpatterns = [
     path('index/', index),
     path('login/', login),
     path('logout/', logout),
+    path('welcome/', welcome),
 ]
