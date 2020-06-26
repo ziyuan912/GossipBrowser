@@ -35,7 +35,7 @@
 						<div class="inner">
 							<h2 class="major">Hello, <em>{{ username }}!</em></h2>
 							<form method="post" action="../welcome/">{% csrf_token %}
-			                    <div style="color: white; width: 800px; height: 50px; border-color: white"><input type="text" placeholder="What gossip do you want to search today" name="Query" aria-describedby="basic-addon1"></div>
+			                    <div style="color: white; width: 600px; height: 50px; border-color: white"><input type="text" placeholder="What gossip do you want to search today" name="Query" aria-describedby="basic-addon1"></div>
 			                    <input type="hidden" name="username" value={{ username }}>
 			                    <br>
 			                    <button type="submit" class="btn btn-warning">Search</button>
@@ -47,6 +47,16 @@
 			                    	{% endfor %}
 								</ul>
 							<nav>
+							<div style="height: 50px;">
+		                	</div>
+		                	<h4>You may also like</h4>
+		                	<div style="height: 10px;">
+		                	</div>
+		                    <button type="submit" class="btn btn-warning">News 1</button>
+		                    <button type="submit" class="btn btn-warning">News 2</button>
+		                    <button type="submit" class="btn btn-warning">News 3</button>
+		                    <button type="submit" class="btn btn-warning">News 4</button>
+		                    <button type="submit" class="btn btn-warning">News 5</button>
 						</div>
 						
 					</section>
