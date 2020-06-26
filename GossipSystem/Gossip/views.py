@@ -11,8 +11,10 @@ def login(request):
     if User is not None:
         #auth.login(request, user)
         return HttpResponseRedirect('/index/')
+    elif username == '' and password == '':
+        return render(request, 'login.html', {'account_exist':1})
     else:
-        return render(request, 'login.html', locals())
+        return render(request, 'login.html', {'account_exist':0})
 
 def index(request):
     return render(request, 'index.html')

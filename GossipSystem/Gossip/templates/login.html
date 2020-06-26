@@ -41,7 +41,11 @@
                     <div style="height: 20px"></div>
                     <h3>Password</h3>
                     <div style="color: white; width: 300px; height: 50px"><input class="col-3" type="password" placeholder="Please enter your password" name="Password"></div>
-                    
+                    {% if account_exist == 0 %}
+                    <div class="alert alert-danger alert-dismissible " role="alert">
+                      <strong style="color: red">Account or password doesn't exist! <br> Please try again.</strong>
+                    </div>
+                    {% endif %}
                     <br>
                     <button type="submit" class="btn btn-warning">Login</button>
                   </form >
