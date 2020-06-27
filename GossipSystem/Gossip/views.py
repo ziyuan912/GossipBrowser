@@ -3,6 +3,12 @@ from django.http import HttpResponseRedirect
 from .models import user, document
 import json
 
+import sys
+sys.path.insert(1, '../')
+import vsm.doc_ranking as vd
+
+idf, vocab, center, cluster_vector, cluster_id = vd.load_model()
+
 def login(request):
     """if request.user.is_authenticated:
         return HttpResponseRedirect('/index/')"""
@@ -32,7 +38,8 @@ def welcome(request):
             'username': username, 'documents': json.dumps([])
         })
     else:
-        documents = [0, 1, 2, 3, 4]
+        documents = vd.cal(query, idf, vocab, center, cluster_vector, cluster_id)
+        # documents = [0, 1, 2, 3, 4]
         doc_list = []
         for doc in documents:
             f = open("Gossip/templates/article_htmls/" + str(doc) + ".html")
