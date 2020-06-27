@@ -24,14 +24,14 @@ class TF_IDF():
 
         word_count = 0
         for word, df in self.df.items():
-            self.idf[word] = math.log10(1000 / df)
+            self.idf[word] = math.log10(30000 / df)
             self.idx2word[word_count] = word
             self.word2idx[word] = word_count
             word_count += 1
             self.word_voc.append(word)
     
     def tf_idf(self, index, word):
-        k1 = 1.6
+        k1 = 1.5
         b = 0.75
         if index in self.tf[word]:
             return self.tf[word][index]*self.idf[word]* (k1+1) / (self.tf[word][index] + k1 * (1-b+b*self.doc_length[index]/self.doc_length[-1]))

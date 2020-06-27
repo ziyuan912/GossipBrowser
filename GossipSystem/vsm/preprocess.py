@@ -15,7 +15,7 @@ def make_info(filename):
         print('turn to dic ...')
         #articles = ast.literal_eval(articles)
         articles=json.loads(articles)
-        articles = articles['articles']
+        articles=articles['articles'][20000:]
         df = {}#bi 2 cnt
         word2doc = {}#k:bigram V: K:doc id v:count
         doclen = {}
@@ -53,6 +53,7 @@ def make_info(filename):
                     doclen[index]=1
                 else :
                     doclen[index]+=1
+            
             articles[i]['article_id'] = index
             print(index)
             for term in words_in_articles:
@@ -61,28 +62,26 @@ def make_info(filename):
                 else:
                     df[term]=1
         #print(bi2doc)
-    
     hold=0
     for k,v in doclen.items():
         hold += v
     hold /= len(doclen)
     doclen[-1] = hold
-
+    
     delete_keys = []
     for word, times in df.items():
-        if df[word] < 15:
+        if df[word] < 10:
             delete_keys.append(word)
     
     for word in delete_keys:
         del df[word]
         del word2doc[word]
-
+    
     return word2doc, df, articles, doclen
 
 data_dir = sys.argv[1]
 tf, df, articles, doclen = make_info(os.path.join(data_dir, 'gossiping-1-2000.json'))
 
-print(doclen)
 print('saving tf ...')
 torch.save(tf, os.path.join(data_dir, 'tf.pkl'))
 print('saving df ...')
@@ -93,5 +92,6 @@ print('saving doclen')
 torch.save(doclen, os.path.join(data_dir,'doclen.pkl'))
 #print('num_of_blank_articles',num_of_blank_articles)
 print('saving docs')
-torch.save(articles, os.path.join(data_dir,'articles.json'))
+with open(os.path.join(data_dir,'articles.json'), 'w', encoding='utf-8') as f:
+    json.dump(articles, f, indent=4)
 
