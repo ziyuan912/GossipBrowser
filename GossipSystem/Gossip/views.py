@@ -12,6 +12,7 @@ idf, vocab, center, cluster_vector, cluster_id = vd.load_model()
 
 def get_recommend_set(user):
     recommend_set = list(recommend_doc.objects.filter(user__account = user.account))
+    #recommend_set = list(recommend_doc.objects.all())
     result = []
     if len(recommend_set) == 0:
         result = [1, 2, 3, 4, 5]
@@ -60,20 +61,19 @@ def welcome(request):
     username = request.POST.get('username')
     query = request.POST.get('Query', '')
     User = user.objects.filter(account = username).first()
+    recommend_set = get_recommend_set(User)
+    rec_list = get_doc_list(recommend_set)
     if query == '':
         return render(request, 'welcome.html', {
-            'username': User, 'documents': json.dumps([])
+            'username': User, 'documents': json.dumps([]), 'recommends': rec_list
         })
     else:
         documents = vd.cal(query, idf, vocab, center, cluster_vector, cluster_id)
         documents, recommend = documents[:10], documents[10:]
         for rec in recommend:
             recommend_object = recommend_doc(user=User, document=rec)
-            recommend_object.save()
-        recommend_set = get_recommend_set(user)
-        doc_list = get_doc_list(documents)
-        rec_list = get_doc_list(recommend_set)
-        
+            recommend_object.save()       
+        doc_list = get_doc_list(documents) 
         return render(request, 'welcome.html', {
             'username': User, 'documents': doc_list, 'recommends': rec_list
         })
