@@ -25,8 +25,14 @@ def calculate_doc_ranking(query, doc_vector, relevance_feedback=False):
     cos_sim_arr = np.array(cos_sim_list)
     ind = np.argpartition(cos_sim_arr, -15)[-15:]
     sort_ind = ind[np.argsort(cos_sim_arr[ind])][::-1]
-    print(cos_sim_arr[sort_ind[:10]])
-    return sort_ind[:10], sort_ind[10:]
+    
+    if len(np.where(cos_sim_arr[sort_ind[:15]] == 0)[0]) == 0:
+        return sort_ind[:10], sort_ind[10:]
+    else:
+        max_len = np.where(cos_sim_arr[sort_ind[:10]] == 0)[0][0]
+        if max_len <= 10:
+            return sort_ind[:max_len], []
+        return sort_ind[:10], sort_ind[10:max_len]
 
 def get_query_vector(query, vocab, idf):
     # word segmentation
@@ -72,13 +78,18 @@ if __name__ == '__main__':
     for idx in cluster_ranking:
         doc_ranking.append(cluster_id[max_cluster_id][idx])
 
-    
+    title = [""] * len(doc_ranking)
+    content = [""] * len(doc_ranking)
     for article in articles:
         if "article_id" not in article:
             continue
         if article['article_id'] in doc_ranking:
         #print(doc_vector[index][66196])
-            print(article['article_title'])
-            print(article['content'])
-    
+            index = doc_ranking.index(article['article_id'])
+            title[index] = article['article_title']
+            content[index] = article['content']
+   
+    for i in range(len(doc_ranking)):
+        print(title[i])
+        print(content[i])
 
