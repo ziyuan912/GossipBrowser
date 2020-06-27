@@ -8,3 +8,8 @@ class user(models.Model):
 class document(models.Model):
 	ID = models.IntegerField()
 	topic = models.CharField(max_length=100, help_text='topic')
+
+class recommend_doc(models.Model):
+	user = models.ForeignKey(user, on_delete=models.CASCADE)
+	document = models.IntegerField()
+		
