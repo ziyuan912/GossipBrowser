@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
-from .models import user, document, recommend_doc
+from Gossip.models import user, document, recommend_doc
 import json
 
 import sys
@@ -11,9 +11,9 @@ from random import sample
 idf, vocab, center, cluster_vector, cluster_id = vd.load_model()
 
 def get_recommend_set(user):
-    recommend_set = list(get_recommend_set(recommend_doc.objects.filter(user = User)))
+    recommend_set = list(recommend_doc.objects.filter(user__account = user.account))
     result = []
-    if recommend_set == None:
+    if len(recommend_set) == 0:
         result = [1, 2, 3, 4, 5]
         return result
     else:
@@ -57,24 +57,25 @@ def logout(request):
     return HttpResponseRedirect('/index/')
 
 def welcome(request):
-    user = request.POST.get('username')
+    username = request.POST.get('username')
     query = request.POST.get('Query', '')
+    User = user.objects.filter(account = username).first()
     if query == '':
         return render(request, 'welcome.html', {
-            'username': user, 'documents': json.dumps([])
+            'username': User, 'documents': json.dumps([])
         })
     else:
         documents = vd.cal(query, idf, vocab, center, cluster_vector, cluster_id)
         documents, recommend = documents[:10], documents[10:]
         for rec in recommend:
-            recommend_object = recommend_doc(user=user, document=rec)
+            recommend_object = recommend_doc(user=User, document=rec)
             recommend_object.save()
         recommend_set = get_recommend_set(user)
         doc_list = get_doc_list(documents)
         rec_list = get_doc_list(recommend_set)
         
         return render(request, 'welcome.html', {
-            'username': user, 'documents': doc_list, 'recommends': rec_list
+            'username': User, 'documents': doc_list, 'recommends': rec_list
         })
 
 def document_details(request, docid):
