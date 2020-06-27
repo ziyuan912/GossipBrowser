@@ -3,8 +3,32 @@ import sys
 import os
 import torch
 import numpy as np
+import json
 
-def calculate_doc_ranking(query, doc_vector, idf, vocab, relevance_feedback=False):
+def query_clustering(query, cluster_vec):
+    cos_sim_list = []
+    for i in range(len(cluster_vec)):
+        cos_sim = np.dot(cluster_vec[i], query) / (np.linalg.norm(cluster_vec[i]) * np.linalg.norm(query) + 1e-8)
+        cos_sim_list.append(cos_sim)
+    
+    print(cos_sim_list) 
+    max_id = cos_sim_list.index(max(cos_sim_list))
+    return max_id
+
+def calculate_doc_ranking(query, doc_vector, relevance_feedback=False):
+    # Calculate cosine similarity
+    cos_sim_list = []
+    for j in range(len(doc_vector)):
+        cos_sim = np.dot(doc_vector[j], query) / (np.linalg.norm(doc_vector[j]) * np.linalg.norm(query) + 1e-8)
+        cos_sim_list.append(cos_sim)
+    #print(cos_sim_list)
+    cos_sim_arr = np.array(cos_sim_list)
+    ind = np.argpartition(cos_sim_arr, -15)[-15:]
+    sort_ind = ind[np.argsort(cos_sim_arr[ind])][::-1]
+    print(cos_sim_arr[sort_ind[:10]])
+    return sort_ind[:10], sort_ind[10:]
+
+def get_query_vector(query, vocab, idf):
     # word segmentation
     seg_list = jieba.cut(query)
     query_tf = {}
@@ -13,7 +37,6 @@ def calculate_doc_ranking(query, doc_vector, idf, vocab, relevance_feedback=Fals
             query_tf[word] = 1
         else:
             query_tf[word] += 1    
-    
     # Create query vector
     query_vec = []
     for w in vocab:
@@ -21,32 +44,41 @@ def calculate_doc_ranking(query, doc_vector, idf, vocab, relevance_feedback=Fals
             query_vec.append(query_tf[w] * idf[w])
         else:
             query_vec.append(0)
-
-    # Calculate cosine similarity
-    cos_sim_list = []
-    query_vec = np.array(query_vec)
-    for j in range(len(doc_vector)):
-        cos_sim = np.dot(doc_vector[j], query_vec) / (np.linalg.norm(doc_vector[j]) * np.linalg.norm(query_vec) + 1e-8)
-        cos_sim_list.append(cos_sim)
-
-    cos_sim_arr = np.array(cos_sim_list)
-    ind = np.argpartition(cos_sim_arr, -10)[-10:]
-    sort_ind = ind[np.argsort(cos_sim_arr[ind])][::-1]
-
-    return sort_ind
+    
+    return np.array(query_vec)
 
 if __name__ == '__main__':
     query = input()
 
     model_dir = sys.argv[1]
-    doc_vector = np.load(os.path.join(model_dir, 'doc_vector.npy'))
+    #doc_vector = np.load(os.path.join(model_dir, 'doc_vector.npy'))
     idf = torch.load(os.path.join(model_dir, 'idf.pkl'))
     vocab = torch.load(os.path.join(model_dir, 'vocab.pkl'))
 
-    doc_ranking = calculate_doc_ranking(query, doc_vector, idf, vocab)
-    print("Doc Ranking: {}".format(doc_ranking))
+    center = torch.load(os.path.join(model_dir, 'final_center.pkl'))
+    cluster_vector = torch.load(os.path.join(model_dir, 'final_cluster_vector.pkl'))
+    cluster_id = torch.load(os.path.join(model_dir, 'final_cluster_id.pkl'))
 
-    articles = torch.load(os.path.join(model_dir, 'articles.pkl'))
-    for index in list(doc_ranking):
-        print(articles[index]['article_title'])
+    query = get_query_vector(query, vocab, idf)
+    max_cluster_id = query_clustering(query, center)
+
+    cluster_ranking, recommend = calculate_doc_ranking(query, cluster_vector[max_cluster_id])
+    #print("Doc Ranking: {}".format(doc_ranking))
+ 
+    with open(os.path.join(model_dir, 'articles.json'), 'r') as f:
+        articles = json.loads(f.read())
+    
+    doc_ranking = []
+    for idx in cluster_ranking:
+        doc_ranking.append(cluster_id[max_cluster_id][idx])
+
+    
+    for article in articles:
+        if "article_id" not in article:
+            continue
+        if article['article_id'] in doc_ranking:
+        #print(doc_vector[index][66196])
+            print(article['article_title'])
+            print(article['content'])
+    
 
