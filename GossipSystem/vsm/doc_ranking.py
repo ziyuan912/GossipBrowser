@@ -53,37 +53,6 @@ def get_query_vector(query, vocab, idf):
     
     return np.array(query_vec)
 
-
-def load_model():
-    # model_dir = sys.argv[1]
-    model_dir = "/Users/jeffreychen/Documents/GossipBrowser/GossipSystem/vsm/IR-Gossip-data/"
-    #doc_vector = np.load(os.path.join(model_dir, 'doc_vector.npy'))
-    idf = torch.load(os.path.join(model_dir, 'idf.pkl'))
-    vocab = torch.load(os.path.join(model_dir, 'vocab.pkl'))
-
-    center = torch.load(os.path.join(model_dir, 'final_center.pkl'))
-    cluster_vector = torch.load(os.path.join(model_dir, 'final_cluster_vector.pkl'))
-    cluster_id = torch.load(os.path.join(model_dir, 'final_cluster_id.pkl'))
-
-    return idf, vocab, center, cluster_vector, cluster_id
-
-
-def cal(query, idf, vocab, center, cluster_vector, cluster_id):
-    query = get_query_vector(query, vocab, idf)
-    max_cluster_id = query_clustering(query, center)
-
-    cluster_ranking, recommend = calculate_doc_ranking(query, cluster_vector[max_cluster_id])
-    
-    doc_ranking = []
-    for idx in cluster_ranking:
-        doc_ranking.append(cluster_id[max_cluster_id][idx])
-
-    for idx in recommend:
-        doc_ranking.append(cluster_id[max_cluster_id][idx])
-
-    return doc_ranking
-
-
 if __name__ == '__main__':
     query = input()
 
@@ -100,7 +69,6 @@ if __name__ == '__main__':
     max_cluster_id = query_clustering(query, center)
 
     cluster_ranking, recommend = calculate_doc_ranking(query, cluster_vector[max_cluster_id])
-    
     #print("Doc Ranking: {}".format(doc_ranking))
  
     with open(os.path.join(model_dir, 'articles.json'), 'r') as f:
