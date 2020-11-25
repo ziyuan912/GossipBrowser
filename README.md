@@ -6,8 +6,8 @@ Everyone loves gossip. However, the information in PTT Gossiping is quite unstru
 
 ### How did we inplement system?
 
-[!image](https://github.com/ziyuan912/GossipBrowser/blob/master/Function.png)
+![image](https://github.com/ziyuan912/GossipBrowser/blob/master/Function.png)
 
 ### Website Interface
 
-[!image](https://github.com/ziyuan912/GossipBrowser/blob/master/Implementation.png)
+![image](https://github.com/ziyuan912/GossipBrowser/blob/master/Implementation.png)
